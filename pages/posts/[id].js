@@ -1,34 +1,17 @@
 import { getGlobalData } from '../../utils/global-data';
-import {
-  getPostBySlug,
-} from '../../utils/mdx-utils';
+import { getPostBySlug } from '../../utils/mdx-utils';
 
-import { MDXRemote } from 'next-mdx-remote';
 import Head from 'next/head';
 import Link from 'next/link';
-import ArrowIcon from '../../components/ArrowIcon';
-import CustomLink from '../../components/CustomLink';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import Layout, { GradientBackground } from '../../components/Layout';
 import SEO from '../../components/SEO';
 
-
-const components = {
-  a: CustomLink,
-  Head,
-};
-
-export default function PostPage({
-  posts,
-  globalData,
-}) {
+export default function PostPage({ posts, globalData }) {
   return (
     <Layout>
-      <SEO
-        title={`${posts.title} - ${globalData.name}`}
-        description={posts.description}
-      />
+      <SEO title={`${posts.title} - ${globalData.name}`} description={posts.description} />
       <Header name={globalData.name} />
       <article className="px-6 md:px-0">
         <header>
@@ -41,33 +24,35 @@ export default function PostPage({
         </header>
         <main>
           <article className="prose dark:prose-dark">
-            {posts.body}
+            {posts.body ? (
+              <div dangerouslySetInnerHTML={{ __html: posts.body }} />
+            ) : (
+              <p>Conteúdo não encontrado.</p>
+            )}
           </article>
         </main>
       </article>
       <Footer copyrightText={globalData.footerText} />
-      <GradientBackground
-        variant="large"
-        className="absolute -top-32 opacity-30 dark:opacity-50"
-      />
-      <GradientBackground
-        variant="small"
-        className="absolute bottom-0 opacity-20 dark:opacity-10"
-      />
+      <GradientBackground variant="large" className="absolute -top-32 opacity-30 dark:opacity-50" />
+      <GradientBackground variant="small" className="absolute bottom-0 opacity-20 dark:opacity-10" />
     </Layout>
   );
 }
 
 export const getServerSideProps = async ({ params }) => {
   const globalData = getGlobalData();
-  const posts = await getPostBySlug(params.id);
- 
+  const post = await getPostBySlug(params.id);
+
+  if (!post) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
       globalData,
-      posts,
+      posts: post,
     },
   };
 };
-

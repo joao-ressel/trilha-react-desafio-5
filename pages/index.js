@@ -27,7 +27,7 @@ export default function Index({ posts, globalData }) {
                 as={`/posts/${post.id}`}
                 href={`/posts/${post.id}`}
               >
-                <a className="py-6 lg:py-10 px-6 lg:px-16 block focus:outline-none focus:ring-4">
+                <div className="py-6 lg:py-10 px-6 lg:px-16 block focus:outline-none focus:ring-4">
                   {post.created_ate && (
                     <p className="uppercase mb-3 font-bold opacity-60">
                       {post.created_at}
@@ -40,7 +40,7 @@ export default function Index({ posts, globalData }) {
                     </p>
                   )}
                   <ArrowIcon className="mt-4" />
-                </a>
+                </div>
               </Link>
             </li>
           ))}
@@ -61,7 +61,8 @@ export default function Index({ posts, globalData }) {
 
 export async function getServerSideProps() {
   const posts = await getPosts();
-  const globalData = getGlobalData()
+  const globalData = getGlobalData();
+  console.log(posts)
 
 
   return { props: { posts, globalData } };
